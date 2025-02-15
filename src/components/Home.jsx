@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import PieChart from './ChartData';
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -28,6 +28,7 @@ function Home() {
     const [selectedArtistRange, setSelectedArtistRange] = useState('medium_term');
     const [selectedTrackRange, setSelectedTrackRange] = useState('medium_term');
 
+    const swiperRef = useRef(null);
 
     const handleGenerateReceiptForArtists = () => {
         const user = username;
@@ -205,7 +206,7 @@ function Home() {
             setSelectedTrackRange(selectedValue);
         }
     };
-
+    
     useEffect(() => {
         const config = {
             headers: {
@@ -261,10 +262,16 @@ function Home() {
             .catch(error => {
                 console.error('Error fetching top tracks', error);
             });
+        
+        setTimeout(() => {
+            if (swiperRef.current) {
+                swiperRef.current.autoplay.start();
+            }
+        }, 500); 
 
         const interval = setInterval(fetchPlaying, 1000);
         return () => clearInterval(interval);
-
+        
     }, [token, selectedArtistRange, selectedTrackRange]);
 
     const progressPercentage = duration ? (progress / duration) * 100 : 0;
@@ -378,8 +385,8 @@ function Home() {
                             navigation
                             pagination={true}
                             className="w-full h-full"
-                            onSwiper={(swiper) => swiper.autoplay.start()}
-                        >
+                            onSwiper={(swiper) => (swiperRef.current = swiper)}
+                            >
                             {artistImage.map((src, index) => (
                                 <SwiperSlide key={index}>
                                     <img src={src.url} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
