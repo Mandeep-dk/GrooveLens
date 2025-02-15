@@ -280,8 +280,8 @@ function Home() {
 
                     {profilePic && (
                         <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
-                            <img src={profilePic} alt="Profile pic" className='border rounded-full w-[95px] h-[100px] mx-1' />
-                            <div className='text-left space-y-1'>
+                            <img src={profilePic} alt="Profile pic" className='border rounded-full w-[95px] h-[100px] -ml-1' />
+                            <div className='text-left space-y-1 ml-6'>
                                 <p className='font-bold text-xl'>{username}</p>
                                 <p className='text-sm'>Followers: {followers}</p>
                             </div>
@@ -373,11 +373,12 @@ function Home() {
                     <div className="rounded-xl overflow-hidden shadow-lg bg-white text-black h-auto border-4 border-black flex">
                         <Swiper
                             modules={[Autoplay, Pagination, Navigation]}
-                            autoplay={{ delay: 2000, disableOnInteraction: false }}
+                            autoplay={{ delay: 2000, disableOnInteraction: false, pauseOnMouseEnter: false }}
                             loop={true}
                             navigation
                             pagination={true}
                             className="w-full h-full"
+                            onSwiper={(swiper) => swiper.autoplay.start()}
                         >
                             {artistImage.map((src, index) => (
                                 <SwiperSlide key={index}>
