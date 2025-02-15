@@ -280,10 +280,10 @@ function Home() {
 
                     {profilePic && (
                         <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
-                            <img src={profilePic} alt="Profile pic" className='border rounded-full w-[120px] md:h-[10px] lg:h-[120px] mx-1' />
+                            <img src={profilePic} alt="Profile pic" className='border rounded-full w-[95px] h-[100px] mx-1' />
                             <div className='text-center md:text-left'>
                                 <p className='font-bold text-xl'>{username}</p>
-                                <p className='text-sm'>Followers: {followers}</p>
+                                <p className='text-sm mr-4'>Followers: {followers}</p>
                             </div>
                         </div>
 
