@@ -8,13 +8,9 @@ function Callback() {
         const hash = window.location.href;
 
         if (hash.includes("access_token")) {
-            console.log('URL Hash:', hash); 
-            console.log('Current URL:', window.location.href);
 
             const tokenParts = hash.split(/[=&]/);
             const token = tokenParts[1]; 
-
-            console.log('Token String:', token);
 
             if (token) {
                 localStorage.setItem('spotify_token', token);
