@@ -19,7 +19,7 @@ function Callback() {
             if (token) {
                 localStorage.setItem('spotify_token', token);
 
-                navigate('/Home'); 
+                navigate('/home'); 
             }
         }
     }, [navigate]);
