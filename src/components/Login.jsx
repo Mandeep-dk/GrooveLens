@@ -2,7 +2,7 @@ import React from 'react';
 
 function Login() {
     const CLIENT_ID = '6bebea651ed148aeb6097e6373c8b659';
-    const REDIRECT_URI = 'https://groove-lens.vercel.app/callback';
+    const REDIRECT_URI = 'https://groove-lens-k7dk.vercel.app/callback';
     const SCOPES = 'user-read-private user-read-email user-top-read user-read-currently-playing'; 
 
 
