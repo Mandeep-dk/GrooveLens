@@ -281,23 +281,20 @@ function Home() {
                     {profilePic && (
                         <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
                             <img src={profilePic} alt="Profile pic" className='border rounded-full w-[95px] h-[100px] mx-1' />
+                            <div className='text-left space-y-1'>
+                                <p className='font-bold text-xl'>{username}</p>
+                                <p className='text-sm'>Followers: {followers}</p>
+                            </div>
+                        </div>
+
+                    ) || <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
+                            <img src={defaultProfilePic} alt="Profile pic" className='border rounded-full w-[90px] h-[100px] mx-3' />
                             <div className='text-center md:text-left'>
                                 <p className='font-bold text-xl'>{username}</p>
                                 <p className='text-sm mr-4'>Followers: {followers}</p>
                             </div>
                         </div>
-
-
-
-
-                    ) || <div className='flex items-center space-x-4 bg-white text-black max-w-md min-w-[300px] h-auto border rounded-xl border-4 border-black flex-shrink-0 p-4'>
-                            <img src={defaultProfilePic} alt="Profile pic" className='border rounded-full w-[90px] h-[100px] mx-3' />
-
-                            <div className='text-center md:text-left'>
-                                <p className='font-bold text-xl'>{username}</p>
-                                <p className='text-sm'>Followers: {followers}</p>
-                            </div>
-                        </div>}
+                    }
 
 
                     {nowPlaying && (
@@ -328,12 +325,11 @@ function Home() {
 
                 </div>
 
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl p-4">
-                    <div className="rounded-xl overflow-hidden shadow-lg bg-white text-black h-auto p-4  border-4 border-black">
+                    <div className="rounded-xl overflow-hidden shadow-lg bg-white text-black h-auto p-4 border-4 border-black">
                         <div className="font-bold text-xl mb-2">Top Artists</div>
                         <label>Range of top artists: </label>
-                        <select value={selectedArtistRange} onChange={handleArtistChange} className='text-black'>
+                        <select value={selectedArtistRange} onChange={handleArtistChange} className='text-black border-black border-2'>
                             <option value="short_term">Last 30 days</option>
                             <option value="medium_term">Last 6 months</option>
                             <option value="long_term">All-time favourites</option>
@@ -349,7 +345,7 @@ function Home() {
                     <div className="rounded-xl overflow-hidden shadow-lg bg-white text-black h-auto p-4 border-4 border-black">
                         <div className="font-bold text-xl mb-2">Top Songs</div>
                         <label>Range of top tracks: </label>
-                        <select value={selectedTrackRange} onChange={handleTrackChange} className='text-black'>
+                        <select value={selectedTrackRange} onChange={handleTrackChange} className='text-black border-black border-2'>
                             <option value="short_term">Last 30 days</option>
                             <option value="medium_term">Last 6 months</option>
                             <option value="long_term">All-time favourites</option>
