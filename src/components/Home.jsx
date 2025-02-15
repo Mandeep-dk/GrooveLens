@@ -92,7 +92,6 @@ function Home() {
         doc.text("Glad to see you again!", 33, 243);
 
         console.log(document.getElementById("pieChart"))
-        // doc.output("dataurlnewwindow"); 
 
         setTimeout(() => {
             const chartElement = document.getElementById("pieChart");
@@ -101,8 +100,8 @@ function Home() {
                 html2canvas(chartElement, { useCORS: true }).then((canvas) => {
                     const imgData = canvas.toDataURL("image/png");
                     doc.addImage(imgData, "PNG", 12, 144, 77, 60);
-                    doc.output("dataurlnewwindow"); //
-                    // doc.save(`TopArtists_Receipt_${date}.pdf`);
+                    // doc.output("dataurlnewwindow"); //
+                    doc.save(`TopArtists_Receipt_${date}.pdf`);
                 });
             } else {
                 doc.output("dataurlnewwindow");
@@ -171,7 +170,7 @@ function Home() {
         doc.addImage(fakeBarcode, "PNG", 12, 220, 77, 12)
         doc.text("THANK YOU!", 41, 239);
         doc.text("Glad to see you again!", 33, 243);
-        // doc.output("dataurlnewwindow"); 
+
         setTimeout(() => {
             const chartElement = document.getElementById("pieChart");
 
@@ -179,7 +178,7 @@ function Home() {
                 html2canvas(chartElement, { useCORS: true }).then((canvas) => {
                     const imgData = canvas.toDataURL("image/png");
                     doc.addImage(imgData, "PNG", 12, 144, 77, 60);
-                    doc.output("dataurlnewwindow");
+                    // doc.output("dataurlnewwindow");
                     doc.save(`TopTracks_Receipt_${date}.pdf`)
                 });
             } else {
