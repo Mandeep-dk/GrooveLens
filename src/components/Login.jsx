@@ -2,7 +2,7 @@ import React from 'react';
 
 function Login() {
     const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
-    const REDIRECT_URI = window.location.hostname==="localhost"? "http://localhost:3000/callback" : "https://groove-lens-k7dk.vercel.app/callback";
+    const REDIRECT_URI = window.location.hostname==="localhost"? "http://localhost:3000/callback" : "https://groove-lens.vercel.app/callback";
     const SCOPES = 'user-read-private user-read-email user-top-read user-read-currently-playing'; 
 
 
