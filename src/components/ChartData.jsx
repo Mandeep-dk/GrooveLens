@@ -35,6 +35,7 @@ const PieChart = () => {
                 const idContainer = [];
                 const genrePromises = artistIds.map(artistId => {
                     return axios.get(`https://api.spotify.com/v1/artists/${artistId}`, config)
+                        
                         .then(response => {
                             const genres = response.data.genres; 
                             idContainer.push(...genres);

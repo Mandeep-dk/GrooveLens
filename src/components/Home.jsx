@@ -6,10 +6,11 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import defaultProfilePic from "../components/../assets/Default_pic.jpg"
-import fakeBarcode from "../components/../assets/image.png"
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import defaultProfilePic from "../components/../assets/Default_pic.jpg"
+import fakeBarcode from "../components/../assets/image.png"
+import spotifyLogo from "../components/../assets/Spotify_Full_Logo_RGB_Black.png";
 
 function Home() {
     const token = localStorage.getItem('spotify_token');
@@ -24,7 +25,13 @@ function Home() {
     const [username, setUsername] = useState(null);
     const [followers, setFollowers] = useState(null);
     const [topArtists, setTopArtists] = useState([]);
+    const [topArtistsLink, setTopArtistsLink] = useState([]);
     const [topTracks, setTopTracks] = useState([]);
+    const [topTracksLink, setTopTracksLink] = useState([]);
+    const [albumCoverLink, setAlbumCoverLink] = useState();
+    const [currentlyPlayingTrackLink, setCurrentlyPlayingTrackLink] = useState();
+    const [currentlyPlayingArtistLink, setcurrentlyPlayingArtistLink] = useState([]);
+    const [userLink, setUserLink] = useState();
     const [selectedArtistRange, setSelectedArtistRange] = useState('medium_term');
     const [selectedTrackRange, setSelectedTrackRange] = useState('medium_term');
 
@@ -36,7 +43,7 @@ function Home() {
         generateReceiptForArtists(user, topArtist);
     };
 
-    const generateReceiptForArtists = (username, topArtists) => {
+    const generateReceiptForArtists = async (username, topArtists) => {
         const doc = new jsPDF({
             orientation: "portrait",
             unit: "mm",
@@ -89,19 +96,19 @@ function Home() {
         doc.text("----------------------------------------", 35, 216)
         doc.setFontSize(12);
         doc.addImage(fakeBarcode, "PNG", 12, 220, 77, 12)
-        doc.text("THANK YOU!", 41, 239);
-        doc.text("Glad to see you again!", 33, 243);
+        doc.text("THANK YOU!", 39, 239);
+        doc.text("Glad to see you again!", 31, 243);
 
-        console.log(document.getElementById("pieChart"))
-
+        doc.addImage(spotifyLogo, "PNG", 39, 250, 25, 7)
         setTimeout(() => {
             const chartElement = document.getElementById("pieChart");
 
             if (chartElement) {
                 html2canvas(chartElement, { useCORS: true }).then((canvas) => {
+
                     const imgData = canvas.toDataURL("image/png");
                     doc.addImage(imgData, "PNG", 12, 144, 77, 60);
-                    // doc.output("dataurlnewwindow"); //
+
                     doc.save(`TopArtists_Receipt_${date}.pdf`);
                 });
             } else {
@@ -169,8 +176,10 @@ function Home() {
         doc.text("----------------------------------------", 35, 216)
         doc.setFontSize(12);
         doc.addImage(fakeBarcode, "PNG", 12, 220, 77, 12)
-        doc.text("THANK YOU!", 41, 239);
-        doc.text("Glad to see you again!", 33, 243);
+        doc.text("THANK YOU!", 39, 239);
+        doc.text("Glad to see you again!", 31, 243);
+
+        doc.addImage(spotifyLogo, "PNG", 39, 250, 25, 7)
 
         setTimeout(() => {
             const chartElement = document.getElementById("pieChart");
@@ -206,7 +215,7 @@ function Home() {
             setSelectedTrackRange(selectedValue);
         }
     };
-    
+
     useEffect(() => {
         const config = {
             headers: {
@@ -217,6 +226,12 @@ function Home() {
         const fetchPlaying = () => axios.get("https://api.spotify.com/v1/me/player/currently-playing", config)
             .then(response => {
                 const { item } = response.data;
+
+                setAlbumCoverLink(response.data.item.album.external_urls.spotify)
+
+                setCurrentlyPlayingTrackLink(response.data.item.external_urls.spotify)
+
+                setcurrentlyPlayingArtistLink(response.data.item.artists.map(items => items.external_urls.spotify))
                 if (item) {
                     setAlbumCover(item.album.images[0].url);
                     setArtists(item.artists.map(artist => artist.name));
@@ -233,6 +248,8 @@ function Home() {
 
         axios.get("https://api.spotify.com/v1/me", config)
             .then(response => {
+                console.log(response.data.external_urls.spotify)
+                setUserLink(response.data.external_urls.spotify);
                 setProfilePic(response.data.images[0].url);
                 setUsername(response.data.display_name);
                 setFollowers(response.data.followers.total);
@@ -244,9 +261,9 @@ function Home() {
         axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${selectedArtistRange}`, config)
             .then(response => {
                 console.log(response.data)
+                setTopArtistsLink(response.data.items.slice(0, 10).map((items) => items.external_urls.spotify));
                 const artistImage = response.data.items.slice(0, 10).map(item => item.images[0]);
                 setArtistImage(artistImage);
-                console.log(artistImage);
                 const artists = response.data.items.slice(0, 10).map(item => item.name);
                 setTopArtists(artists);
             })
@@ -256,22 +273,23 @@ function Home() {
 
         axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${selectedTrackRange}`, config)
             .then(response => {
+                setTopTracksLink(response.data.items.slice(0, 10).map((items) => items.external_urls.spotify))
                 const tracks = response.data.items.slice(0, 10).map(item => item.name);
                 setTopTracks(tracks);
             })
             .catch(error => {
                 console.error('Error fetching top tracks', error);
             });
-        
+
         setTimeout(() => {
             if (swiperRef.current) {
                 swiperRef.current.autoplay.start();
             }
-        }, 500); 
+        }, 500);
 
         const interval = setInterval(fetchPlaying, 1000);
         return () => clearInterval(interval);
-        
+
     }, [token, selectedArtistRange, selectedTrackRange]);
 
     const progressPercentage = duration ? (progress / duration) * 100 : 0;
@@ -283,13 +301,20 @@ function Home() {
                 <h3 className="w-full text-center p-2 lg:text-[51px] text-4xl font-mono font-bold rounded px-4">
                     GrooveLens - A closer look at your sound
                 </h3>
+                <div className="flex items-center w-full justify-center text-center px-4 lg:px-12 md:justify-center lg:justify-center">
+                    <p className="mr-2 font-semibold">Powered by</p>
+                    <img src={spotifyLogo} className="h-[30px]" alt="Spotify Logo" />
+                </div>
+
                 <div className='pt-7 flex flex-col md:flex-row items-center justify-between w-full max-w-6xl p-4 '>
 
                     {profilePic && (
                         <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
                             <img src={profilePic} alt="Profile pic" className='border rounded-full w-[95px] h-[100px] -ml-1' />
                             <div className='text-left space-y-1 ml-6'>
-                                <p className='font-bold text-xl'>{username}</p>
+                                <a href={userLink} target='_blank'>
+                                    <p className='font-bold text-xl'>{username}</p>
+                                </a>
                                 <p className='text-sm'>Followers: {followers}</p>
                             </div>
                         </div>
@@ -306,10 +331,22 @@ function Home() {
 
                     {nowPlaying && (
                         <div className="w-full max-w-[600px] md:max-w-[860px] lg:max-w-[1000px] bg-white text-black border rounded-xl p-4 mt-4 md:mt-0 md:ml-6 border-4 border-black">
-                            <img className="h-10 w-auto mt-2" src={albumCover} alt="Album cover" />
+                            <a href={albumCoverLink} target="_blank">
+                                <img className="h-10 w-auto mt-2" src={albumCover} alt="Album cover" />
+                            </a>
                             <div className='mx-12 -mt-11'>
-                                <p>{nowPlaying}</p>
-                                <p>{artists.join(', ')}</p>
+                                <a href={currentlyPlayingTrackLink} target='_blank'>
+                                    <p>{nowPlaying}</p>
+                                </a>
+                                {artists.map((artist, artistIndex) => (
+                                    <span key={artistIndex}>
+                                        <a href={currentlyPlayingArtistLink[artistIndex]} target="_blank" rel="noopener noreferrer">
+                                            {artist}
+                                        </a>
+                                        {artistIndex < artists.length - 1 && ", "}
+                                    </span>
+                                ))}
+
                             </div>
                             <p>
                                 {Math.floor(progress / 60000)}:
@@ -344,7 +381,12 @@ function Home() {
                         </select>
                         <ul className='mt-2'>
                             {topArtists.map((artist, index) => (
-                                <li key={index}>{artist}</li>
+
+                                <li key={index}>
+                                    <a href={topArtistsLink[index]} target="_blank"
+                                    >{artist}</a>
+                                </li>
+
                             ))}
                         </ul>
                     </div>
@@ -361,7 +403,9 @@ function Home() {
                         </select>
                         <ul className='mt-2'>
                             {topTracks.map((track, index) => (
-                                <li key={index}>{track}</li>
+                                <li key={index}>
+                                    <a href={topTracksLink[index]} target='_blank'>{track}</a>
+                                </li>
                             ))}
                         </ul>
                     </div>
@@ -374,7 +418,8 @@ function Home() {
                         className="flex justify-center items-center w-full p-6 bg-white rounded-xl shadow-lg border-4 border-black">
                         <div className="h-[350px] md:h-[400px] w-full flex justify-center items-center">
                             <PieChart width={300} height={350} />
-                        </div>                    </div>
+                        </div>                    
+                    </div>
 
 
                     <div className="rounded-xl overflow-hidden shadow-lg bg-white text-black h-auto border-4 border-black flex">
@@ -386,10 +431,18 @@ function Home() {
                             pagination={true}
                             className="w-full h-full"
                             onSwiper={(swiper) => (swiperRef.current = swiper)}
-                            >
-                            {artistImage.map((src, index) => (
-                                <SwiperSlide key={index}>
-                                    <img src={src.url} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
+                        >
+                            {artistImage.map((src, artistIndex) => (
+                                <SwiperSlide key={artistIndex}>
+
+                                    <img src={src.url} alt={`Slide ${artistIndex + 1}`} className="w-full h-full object-cover" />
+                                    <a href={topArtistsLink[artistIndex]}>
+                                        <p className="absolute top-2 left-2 font-bold bg-opacity-60 text-white px-2 py-1">
+                                            #{artistIndex + 1} {topArtists[artistIndex]}
+                                        </p>
+
+                                    </a>
+
                                 </SwiperSlide>
                             ))}
                         </Swiper>

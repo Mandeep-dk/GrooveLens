@@ -1,4 +1,5 @@
 import React from 'react';
+import spotifyLogo from "../components/../assets/Spotify_Full_Logo_RGB_Black.png";
 
 function Login() {
     const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
@@ -21,6 +22,10 @@ function Login() {
                 <button onClick={handleLogin} className='bg-green-500 border border-2 border-black rounded-full mt-4 w-70 px-4 py-2 font-semibold text-black hover:bg-green-600'>
                     Login with Spotify
                 </button>
+                <div className='flex p-2 ml-4 text-2xl'>
+                    <p>Powered by</p>
+                    <img src={spotifyLogo} className='h-8 px-2'></img>
+                </div>
             </div>
         </>
     );
