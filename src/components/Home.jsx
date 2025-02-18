@@ -302,8 +302,7 @@ function Home() {
                     GrooveLens - A closer look at your sound
                 </h3>
                 <div className="flex items-center w-full justify-center text-center px-4 lg:px-12 md:justify-center lg:justify-center">
-                    <p className="mr-2 font-semibold">Powered by</p>
-                    <img src={spotifyLogo} className="h-[30px]" alt="Spotify Logo" />
+                    <img src={spotifyLogo} className="h-[72px]" alt="Spotify Logo" />
                 </div>
 
                 <div className='pt-7 flex flex-col md:flex-row items-center justify-between w-full max-w-6xl p-4 '>
