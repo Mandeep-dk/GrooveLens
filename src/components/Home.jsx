@@ -436,7 +436,7 @@ function Home() {
                                 <SwiperSlide key={artistIndex}>
 
                                     <img src={src.url} alt={`Slide ${artistIndex + 1}`} className="w-full h-full object-cover" />
-                                    <a href={topArtistsLink[artistIndex]}>
+                                    <a href={topArtistsLink[artistIndex]} target='_blank'>
                                         <p className="absolute top-2 left-2 font-bold bg-opacity-60 text-white px-2 py-1">
                                             #{artistIndex + 1} {topArtists[artistIndex]}
                                         </p>
