@@ -22,8 +22,8 @@ function Home() {
     const [artists, setArtists] = useState([]);
     const [albumCover, setAlbumCover] = useState('');
     const [artistImage, setArtistImage] = useState([]);
-    const [username, setUsername] = useState(null);
-    const [followers, setFollowers] = useState(null);
+    const [username, setUsername] = useState("");
+    const [followers, setFollowers] = useState(0);
     const [topArtists, setTopArtists] = useState([]);
     const [topArtistsLink, setTopArtistsLink] = useState([]);
     const [topTracks, setTopTracks] = useState([]);
@@ -248,9 +248,9 @@ function Home() {
 
         axios.get("https://api.spotify.com/v1/me", config)
             .then(response => {
-                console.log(response.data.external_urls.spotify)
+                console.log(response.data)
                 setUserLink(response.data.external_urls.spotify);
-                setProfilePic(response.data.images[0].url);
+                setProfilePic(response.data.images?.length > 0 ? response.data.images[0].url : null);
                 setUsername(response.data.display_name);
                 setFollowers(response.data.followers.total);
             })
@@ -307,25 +307,35 @@ function Home() {
 
                 <div className='pt-7 flex flex-col md:flex-row items-center justify-between w-full max-w-6xl p-4 '>
 
-                    {profilePic && (
+                    {profilePic !== null && profilePic !== undefined ? (
                         <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
                             <img src={profilePic} alt="Profile pic" className='border rounded-full w-[95px] h-[100px] -ml-1' />
                             <div className='text-left space-y-1 ml-6'>
                                 <a href={userLink} target='_blank'>
-                                    <p className='font-bold text-xl'>{username}</p>
+                                    {username.length > 14 ? (
+                                        <p className='font-bold text-sm max-w-[150px]'>{username}</p>
+                                    ) : (
+                                        <p className='font-bold text-xl max-w-[150px]'>{username}</p>
+                                    )}
                                 </a>
                                 <p className='text-sm'>Followers: {followers}</p>
                             </div>
                         </div>
-
-                    ) || <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
+                    ) : (
+                        <div className='flex items-center space-x-4 bg-white text-black w-full sm:w-[400px] md:w-[350px] lg:w-[325px] h-auto border rounded-xl border-4 border-black p-4'>
                             <img src={defaultProfilePic} alt="Profile pic" className='border rounded-full w-[90px] h-[100px] mx-3' />
-                            <div className='text-center md:text-left'>
-                                <p className='font-bold text-xl'>{username}</p>
-                                <p className='text-sm mr-4'>Followers: {followers}</p>
+                            <div className='text-left space-y-1 ml-3'>
+                                <a href={userLink} target='_blank'>
+                                    {username.length > 14 ? (
+                                        <p className='font-bold text-sm max-w-[150px]'>{username}</p>
+                                    ) : (
+                                        <p className='font-bold text-xl max-w-[150px]'>{username}</p>
+                                    )}
+                                </a>
+                                <p className='text-sm'>Followers: {followers}</p>
                             </div>
                         </div>
-                    }
+                    )}
 
 
                     {nowPlaying && (
@@ -417,7 +427,7 @@ function Home() {
                         className="flex justify-center items-center w-full p-6 bg-white rounded-xl shadow-lg border-4 border-black">
                         <div className="h-[350px] md:h-[400px] w-full flex justify-center items-center">
                             <PieChart width={300} height={350} />
-                        </div>                    
+                        </div>
                     </div>
 
 
